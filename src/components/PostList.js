@@ -1,29 +1,15 @@
-import { gql, useQuery } from '@apollo/client'
-
-export const ALL_POSTS_QUERY = gql`
-  query Hobbies($limit: Int!) {
-    hobbies(sortBy: NAME_ASC, limit: $limit) {
-      _id
-      name
-      slug
-    }
-  }
-`
-
-export const allPostsQueryVars = {
-  limit: 1000,
-}
+import { useMongo } from "util/database";
 
 export default function PostList() {
-  const { loading, error, data } = useQuery(ALL_POSTS_QUERY, {
-    variables: allPostsQueryVars,
-    notifyOnNetworkStatusChange: true,
-  })
+  const database = useMongo();
+  const { loading, error, data } = database.list("hobbies", {
+    limit: 1000,
+  });
 
-  if (error) return <div>Error loading posts.</div>
-  if (loading) return <div>Loading</div>
+  if (error) return <div>Error loading posts.</div>;
+  if (loading) return <div>Loading</div>;
 
-  const { hobbies } = data
+  const { hobbies } = data;
 
   return (
     <section>
@@ -38,5 +24,5 @@ export default function PostList() {
         ))}
       </ul>
     </section>
-  )
+  );
 }
